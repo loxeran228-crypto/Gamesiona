@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+
+<!-- 📱 ВАЖНО ДЛЯ ТЕЛЕФОНА -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Игровой портал</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: radial-gradient(circle at top, #111827, #020617);
+    color: white;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 25px;
+    font-size: 32px;
+    font-weight: bold;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ЭКРАНЫ */
+.screen {
+    display: none;
+    padding: 20px;
+    animation: fade 0.3s ease;
+}
+
+.active {
+    display: block;
+}
+
+@keyframes fade {
+    from {opacity: 0; transform: scale(0.98);}
+    to {opacity: 1; transform: scale(1);}
+}
+
+/* КНОПКИ */
+button {
+    background: #2563eb;
+    border: none;
+    padding: 12px 18px;
+    margin: 8px;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* КАРТОЧКИ */
+.card {
+    background: rgba(255,255,255,0.06);
+    padding: 15px;
+    margin: 10px;
+    border-radius: 15px;
+    display: inline-block;
+    min-width: 200px;
+    backdrop-filter: blur(8px);
+}
+
+/* СЕКЦИИ */
+.section-title {
+    font-size: 22px;
+    margin: 20px 0 10px;
+    text-align: center;
+    color: #93c5fd;
+}
+
+/* TOAST */
+#toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f172a;
+    padding: 12px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.show {
+    opacity: 1;
+}
+
+/* 📱 МОБИЛЬНАЯ РАСКЛАДКА (НЕ ЛОМАЕТ ПК) */
+@media (max-width: 600px) {
+
+    header {
+        font-size: 24px;
+        padding: 15px;
+    }
+
+    .screen {
+        padding: 12px;
+    }
+
+    .card {
+        display: block;
+        width: 95%;
+        margin: 10px auto;
+    }
+
+    button {
+        width: 95%;
+        font-size: 16px;
+        padding: 14px;
+        margin: 6px auto;
+        display: block;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🎮 Игровой портал</header>
+
+<div id="toast"></div>
+
+<!-- МЕНЮ -->
+<div id="menu" class="screen active">
+
+    <div class="section-title">🎮 Игры</div>
+
+    <div class="card"><button onclick="openScreen('clicker')">🖱️ Кликер</button></div>
+    <div class="card"><button onclick="openScreen('quiz')">❓ Викторина</button></div>
+    <div class="card"><button onclick="openScreen('guess')">🎲 Угадай число</button></div>
+
+    <div class="section-title">➕ Дополнительно</div>
+
+    <div class="card"><button onclick="openScreen('calc')">🧮 Калькулятор</button></div>
+    <div class="card"><button onclick="openScreen('time')">⏱️ Часы</button></div>
+
+    <div class="card"><button onclick="openScreen('profile')">👤 Профиль</button></div>
+
+</div>
+
+<!-- КЛИКЕР -->
+<div id="clicker" class="screen">
+<h2>Кликер</h2>
+<p id="count">0</p>
+<button onclick="clicker()">Клик!</button>
+<br>
+<button onclick="openScreen('menu')">⬅ Назад</button>
+</div>
+
+<!-- ВИКТОРИНА -->
+<div id="quiz" class="screen">
+<h2>❓ Викторина</h2>
+
+<p id="qtext"></p>
+
+<button onclick="answer(true)">Ответ A</button>
+<button onclick="answer(false)">Ответ B</button>
+
+<p id="level">Уровень: 1 / 5</p>
+
+<br>
+<button onclick="openScreen('menu')">⬅ Назад</button>
+</div>
+
+<!-- УГАДАЙ -->
+<div id="guess" class="screen">
+<h2>🎲 Угадай число</h2>
+
+<button onclick="guess(1)">1</button>
+<button onclick="guess(2)">2</button>
+<button onclick="guess(3)">3</button>
+<button onclick="guess(4)">4</button>
+<button onclick="guess(5)">5</button>
+
+<br>
+<button onclick="openScreen('menu')">⬅ Назад</button>
+</div>
+
+<!-- КАЛЬКУЛЯТОР -->
+<div id="calc" class="screen">
+<h2>🧮 Калькулятор</h2>
+
+<input id="a"> + <input id="b">
+<button onclick="calc()">=</button>
+
+<p id="res"></p>
+
+<br>
+<button onclick="openScreen('menu')">⬅ Назад</button>
+</div>
+
+<!-- ЧАСЫ -->
+<div id="time" class="screen">
+<h2>⏱️ Часы</h2>
+
+<p id="clock"></p>
+
+<h3>Секундомер</h3>
+<p id="sw">0</p>
+
+<button onclick="start()">Старт</button>
+<button onclick="stop()">Стоп</button>
+
+<br>
+<button onclick="openScreen('menu')">⬅ Назад</button>
+</div>
+
+<!-- ПРОФИЛЬ -->
+<div id="profile" class="screen">
+<h2>👤 Профиль игрока</h2>
+
+<p>⏱ Время на сайте:</p>
+<h1 id="timeSpent">0 сек</h1>
+
+<p>📊 Статус: <span id="status">Новичок</span></p>
+
+<br>
+<button onclick="openScreen('menu')">⬅ Назад</button>
+</div>
+
+<script>
+
+let count = 0;
+let t = 0;
+let interval;
+
+/* навигация */
+function openScreen(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+/* toast */
+function toast(msg){
+    let t=document.getElementById("toast");
+    t.innerText=msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),2000);
+}
+
+/* кликер */
+function clicker(){
+    count++;
+    document.getElementById("count").innerText=count;
+    toast("+1");
+}
+
+/* угадай */
+function guess(n){
+    let r=Math.floor(Math.random()*5)+1;
+    if(n===r) toast("🎉 Победа!");
+    else toast("❌ Было "+r);
+}
+
+/* калькулятор */
+function calc(){
+    let a=+document.getElementById("a").value;
+    let b=+document.getElementById("b").value;
+    document.getElementById("res").innerText=a+b;
+}
+
+/* часы */
+setInterval(()=>{
+    document.getElementById("clock").innerText=new Date().toLocaleTimeString();
+},1000);
+
+/* секундомер */
+function start(){
+    interval=setInterval(()=>{
+        t++;
+        document.getElementById("sw").innerText=t;
+    },1000);
+}
+
+function stop(){
+    clearInterval(interval);
+}
+
+/* викторина */
+let level=1;
+let currentAnswer=true;
+
+function generateQuestion(){
+    let base=level*10;
+    let a=Math.floor(Math.random()*base);
+    let b=Math.floor(Math.random()*base);
+
+    let correct=a+b;
+    let fake=correct+Math.floor(Math.random()*(level*4)+1);
+
+    currentAnswer=Math.random()>0.5;
+
+    document.getElementById("qtext").innerText=
+        `Уровень ${level}: ${a} + ${b} = ?`;
+
+    document.querySelectorAll("#quiz button")[0].innerText=
+        currentAnswer?correct:fake;
+
+    document.querySelectorAll("#quiz button")[1].innerText=
+        currentAnswer?fake:correct;
+
+    document.getElementById("level").innerText=
+        `Уровень: ${level} / 5`;
+}
+
+function answer(isRight){
+    if(isRight===currentAnswer){
+        toast("✔ Верно!");
+        level++;
+
+        if(level>5){
+            toast("🏆 Пройдено!");
+            level=1;
+        }
+
+        generateQuestion();
+    }else{
+        toast("❌ Ошибка!");
+    }
+}
+
+generateQuestion();
+
+/* профиль (время) */
+let startTime = localStorage.getItem("startTime");
+
+if(!startTime){
+    startTime = Date.now();
+    localStorage.setItem("startTime",startTime);
+}else{
+    startTime = parseInt(startTime);
+}
+
+function updateProfile(){
+    let sec=Math.floor((Date.now()-startTime)/1000);
+
+    document.getElementById("timeSpent").innerText=sec+" сек";
+
+    let status="Новичок";
+    if(sec>300) status="Игрок";
+    if(sec>900) status="Про";
+    if(sec>1800) status="Легенда";
+
+    document.getElementById("status").innerText=status;
+}
+
+setInterval(updateProfile,1000);
+
+</script>
+
+</body>
+  </html>
